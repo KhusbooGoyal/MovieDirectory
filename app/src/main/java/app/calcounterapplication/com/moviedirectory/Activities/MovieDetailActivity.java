@@ -10,7 +10,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +46,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
+        queue = Volley.newRequestQueue(this);
+
         movie = (Movie) getIntent().getSerializableExtra("movie");
         movieId = movie.getImdbId();
 
@@ -68,6 +73,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                         }else {
                             rating.setText("Ratings: N/A");
                         }
+                        movieTitle.setText(response.getString("Title"));
+                        movieYear.setText("Released: "+ response.getString("Released"));
+                        director.setText("Director: "+ response.getString("Director"));
+                        writers.setText("Writers: "+ response.getString("Writer"));
+                        plot.setText("Plot: "+ response.getString("Plot"));
+                        runtime.setText("Runtime: "+response.getString("Runtime"));
+                        actors.setText("Actors:" +response.getString("Actors"));
+
+                        Picasso.get().load(response.getString("Poster"))
+                                .into(movieImage);
+
+                        boxOffice.setText("Box Office" + response.getString("BoxOffice"));
                     }
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -78,6 +95,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                VolleyLog.d("Error:" , error.getMessage());
             }
         });
         queue.add(jsonObjectRequest);
