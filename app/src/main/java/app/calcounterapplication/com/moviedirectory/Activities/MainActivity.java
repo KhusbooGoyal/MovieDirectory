@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.calcounterapplication.com.moviedirectory.Data.MovieRecyclerViewAdapter;
 import app.calcounterapplication.com.moviedirectory.Model.Movie;
 import app.calcounterapplication.com.moviedirectory.R;
 import app.calcounterapplication.com.moviedirectory.Util.Constants;
@@ -67,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
         movieList = new ArrayList<>();
         Prefs prefs = new Prefs(MainActivity.this);
         String search = prefs.getSearch();
-        getMovies(search);
+        //getMovies(search);
+
+        movieList = getMovies(search);
+        movieRecyclerViewAdapter = new MovieRecyclerViewAdapter(this, movieList );
+        recyclerView.setAdapter(movieRecyclerViewAdapter);;
+        movieRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     //Get movies
@@ -90,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
                         movie.setPoster(movieObj.getString("Poster"));
                         movie.setImdbId(movieObj.getString("imdbId"));
 
-                        Log.d("Movies", movie.getTitle());
+                        movieList.add(movie);
+                        //Log.d("Movies", movie.getTitle());
                     }
+                    movieRecyclerViewAdapter.notifyDataSetChanged();
 
                 }catch (JSONException e){
                     e.printStackTrace();
