@@ -25,6 +25,8 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                showInputDialog();
             }
         });
 
@@ -68,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        movieList = new ArrayList<>();
         Prefs prefs = new Prefs(MainActivity.this);
         String search = prefs.getSearch();
+
+        movieList = new ArrayList<>();
         //getMovies(search);
 
         movieList = getMovies(search);
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         movieList.add(movie);
                         //Log.d("Movies", movie.getTitle());
                     }
-                    movieRecyclerViewAdapter.notifyDataSetChanged();
+                    movieRecyclerViewAdapter.notifyDataSetChanged();//Important
 
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -134,7 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.new_search) {
-            return true;
+            showInputDialog();
+            //return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -143,5 +148,27 @@ public class MainActivity extends AppCompatActivity {
     public  void showInputDialog() {
         alertBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.dialog_view, null);
+        final EditText newSearchEdt = (EditText) view.findViewById(R.id.searchEdt);
+        Button submitButton = (Button) view.findViewById(R.id.submitButton);
+
+        alertBuilder.setView(view);
+        alertDialog = alertBuilder.create();
+        alertDialog.show();
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs prefs = new Prefs(MainActivity.this);
+                if (!newSearchEdt.getText().toString().isEmpty()) {
+                    String search = newSearchEdt.getText().toString();
+                    prefs.setSearch(search);
+                    movieList.clear();
+
+                    getMovies(search);
+                    //movieRecyclerViewAdapter.notifyDataSetChanged(); //Very important
+                }
+                alertDialog.dismiss();
+            }
+        });
     }
 }
