@@ -2,6 +2,7 @@ package app.calcounterapplication.com.moviedirectory.Data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import app.calcounterapplication.com.moviedirectory.Activities.MovieDetailActivity;
 import app.calcounterapplication.com.moviedirectory.Model.Movie;
 import app.calcounterapplication.com.moviedirectory.R;
 
@@ -64,7 +66,7 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
         TextView year;
         TextView type;
 
-        public ViewHolder(View itemView, Context ctx) {
+        public ViewHolder(View itemView, final Context ctx) {
             super(itemView);
             context = ctx;
 
@@ -77,7 +79,10 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
                 @Override
                 public void onClick(View v) {
 
-                    Toast.makeText(context, "Row Tapped!", Toast.LENGTH_LONG).show();
+                    Movie movie = new Movie();
+                    Intent intent = new Intent(context, MovieDetailActivity.class);
+                    intent.putExtra("movie", movie);
+                    ctx.startActivity(intent);
                 }
             });
         }
